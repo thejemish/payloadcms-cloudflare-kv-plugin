@@ -11,7 +11,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/thejemish/payloadcms-cloudflare-kv-plugin.git"
+    "url": "git+https://github.com/thejemish/payloadcms-cloudflare-kv-plugin.git"
   },
   "author": "thejemish",
   "publishConfig": {
