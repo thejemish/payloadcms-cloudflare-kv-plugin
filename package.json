@@ -1,6 +1,6 @@
 {
   "name": "payloadcms-cloudflare-kv-plugin",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "Cloudflare KV Plugin for PayloadCMS v3",
   "license": "MIT",
   "type": "module",

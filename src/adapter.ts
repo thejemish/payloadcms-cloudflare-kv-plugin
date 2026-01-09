@@ -10,7 +10,7 @@ import type {
   TypeWithVersion,
 } from 'payload'
 
-import type { CloudflareKVPluginConfig, KVNamespace } from './types.js'
+import type { CloudflareKVPluginConfig, CompatibleKVNamespace } from './types.js'
 
 import { getCacheOptions, getFromCache, invalidateByPattern, setInCache } from './cache.js'
 import {
@@ -25,11 +25,11 @@ import {
 export function dbAdapterWithCache({
   baseAdapter,
   kv,
-  config = { defaultCacheOptions: { ttl: DEFAULT_TTL }, kv: {} as KVNamespace },
+  config = { defaultCacheOptions: { ttl: DEFAULT_TTL }, kv: {} as CompatibleKVNamespace },
 }: {
   baseAdapter: DatabaseAdapter
   config: CloudflareKVPluginConfig
-  kv: KVNamespace
+  kv: CompatibleKVNamespace
 }): DatabaseAdapter {
   return {
     ...baseAdapter,

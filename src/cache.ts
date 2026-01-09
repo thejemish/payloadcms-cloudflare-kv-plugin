@@ -1,8 +1,8 @@
 import type {
   CacheOptions,
   CloudflareKVPluginConfig,
+  CompatibleKVNamespace,
   DBOperationArgs,
-  KVNamespace,
 } from './types.js'
 
 import { DEFAULT_TTL } from './utils.js'
@@ -44,11 +44,11 @@ export async function getFromCache<T>({
   kv,
 }: {
   key: string
-  kv: KVNamespace
+  kv: CompatibleKVNamespace
 }): Promise<null | T> {
   try {
     const cached = await kv.get(key, { type: 'text' })
-    if (cached) {
+    if (cached && typeof cached === 'string') {
       try {
         return JSON.parse(cached) as T
       } catch (parseErr) {
@@ -75,7 +75,7 @@ export async function setInCache<T>({
 }: {
   data: T
   key: string
-  kv: KVNamespace
+  kv: CompatibleKVNamespace
   ttl: number
 }): Promise<void> {
   try {
@@ -98,7 +98,7 @@ export async function invalidateByPattern({
   kv,
   pattern,
 }: {
-  kv: KVNamespace
+  kv: CompatibleKVNamespace
   pattern: string
 }): Promise<void> {
   try {
