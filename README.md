@@ -44,12 +44,27 @@ First, create a KV namespace in your Cloudflare dashboard or using Wrangler:
 wrangler kv:namespace create "CACHE"
 ```
 
-This will output a namespace ID. Add it to your `wrangler.toml`:
+This will output a namespace ID. Add it to your `wrangler.toml` or `wrangler.jsonc`:
+
+**Using `wrangler.toml`:**
 
 ```toml
 [[kv_namespaces]]
 binding = "CACHE"
 id = "your-namespace-id"
+```
+
+**Using `wrangler.jsonc`:**
+
+```jsonc
+{
+  "kv_namespaces": [
+    {
+      "binding": "CACHE",
+      "id": "your-namespace-id"
+    }
+  ]
+}
 ```
 
 Then configure the plugin in your Payload config:
@@ -435,6 +450,16 @@ cloudflareKVCache({
 [[kv_namespaces]]
 binding = "CACHE"
 id = "your-namespace-id"
+
+// Or in wrangler.jsonc:
+{
+  "kv_namespaces": [
+    {
+      "binding": "CACHE",
+      "id": "your-namespace-id"
+    }
+  ]
+}
 
 // In your code:
 cloudflareKVCache({
