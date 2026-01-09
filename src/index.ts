@@ -1,12 +1,11 @@
-import type { Redis } from 'ioredis'
 import type { Config } from 'payload'
 
-import type { RedisPluginConfig } from './types.js'
+import type { CloudflareKVPluginConfig } from './types.js'
 
 import { dbAdapterWithCache } from './adapter.js'
 
-export const redisCache =
-	(pluginConfig: RedisPluginConfig) =>
+export const cloudflareKVCache =
+	(pluginConfig: CloudflareKVPluginConfig) =>
 		(config: Config): Config => {
 			const incomingOnInit = config.onInit
 
@@ -16,38 +15,25 @@ export const redisCache =
 					await incomingOnInit(payload)
 				}
 
-				let redis: Redis
-
-				if (pluginConfig.redis.client) {
-					redis = pluginConfig.redis.client
-				} else if (pluginConfig.redis.url) {
-					try {
-						const { Redis } = await import('ioredis')
-						redis = new Redis(pluginConfig.redis.url)
-					} catch (err) {
-						console.error(
-							'[RedisPlugin] Failed to import ioredis. Please install it: npm install ioredis',
-						)
-						throw err
-					}
-				} else {
-					throw new Error('[RedisPlugin] Either redis.url or redis.client must be provided')
+				if (!pluginConfig.kv) {
+					throw new Error('[CloudflareKVPlugin] KV namespace must be provided')
 				}
 
+				// Verify KV namespace is accessible by attempting to list (with limit 1)
 				try {
-					await redis.ping()
+					await pluginConfig.kv.list({ limit: 1 })
 				} catch (err) {
-					console.error('[RedisPlugin] Failed to connect to Redis')
+					console.error('[CloudflareKVPlugin] Failed to access KV namespace', err)
 					throw err
 				}
 
 				const baseAdapter = payload.db
 
 				if (!baseAdapter) {
-					throw new Error('[RedisPlugin] No database adapter found')
+					throw new Error('[CloudflareKVPlugin] No database adapter found')
 				}
 
-				payload.db = dbAdapterWithCache({ baseAdapter, config: pluginConfig, redis })
+				payload.db = dbAdapterWithCache({ baseAdapter, config: pluginConfig, kv: pluginConfig.kv })
 			}
 
 			return config

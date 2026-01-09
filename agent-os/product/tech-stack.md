@@ -7,8 +7,9 @@
 - **TypeScript** - Primary development language for type safety
 - **SWC** - Fast TypeScript/JavaScript transpiler for build process
 
-## Redis Integration
-- **ioredis** - Production-ready Redis client with robust connection management, TypeScript support, and cluster compatibility
+## Cloudflare KV Integration
+- **Cloudflare Workers KV** - Globally distributed key-value store for edge caching
+- **@cloudflare/workers-types** - TypeScript definitions for Cloudflare Workers APIs
 
 ## Testing
 - **Vitest** - Unit testing framework for testing cache logic, key generation, and adapter wrapping
@@ -27,16 +28,19 @@
 
 ## Runtime Requirements (for plugin consumers)
 - **Node.js** - Runtime environment
-- **Redis Server** - Redis instance accessible via REDIS_URL environment variable
+- **Cloudflare Workers KV Namespace** - KV namespace accessible via Worker environment bindings
+- **Cloudflare Workers Environment** - For production deployment (or local development setup)
 - **Payload CMS 3.x** - Compatible Payload CMS installation
 - **Any Payload Database Adapter** - PostgreSQL, MongoDB, or other supported adapters
 
 ## Configuration
 - **Environment Variables**:
-  - `REDIS_URL` - Redis connection string (required)
+  - KV namespace binding from Cloudflare Worker environment (required)
 - **Plugin Configuration**: TypeScript-based configuration passed to Payload plugin system
+- **Wrangler Configuration**: KV namespace binding in `wrangler.toml` for Cloudflare Workers
 
 ## Architecture Patterns
 - **Adapter Pattern** - Wraps Payload database adapters transparently
 - **Decorator Pattern** - Adds caching behavior without modifying underlying adapter
 - **Hook System** - Leverages Payload's lifecycle hooks for cache invalidation
+- **Edge Computing** - Leverages Cloudflare's global edge network for low-latency cache access

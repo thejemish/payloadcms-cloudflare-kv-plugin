@@ -15,7 +15,7 @@ Define your technical stack below. This serves as a reference for all team membe
 ### Database & Storage
 - **Database:** [e.g., PostgreSQL, MySQL, MongoDB]
 - **ORM/Query Builder:** [e.g., ActiveRecord, Prisma, Sequelize]
-- **Caching:** [e.g., Redis, Memcached]
+- **Caching:** [e.g., Cloudflare KV, Redis, Memcached]
 
 ### Testing & Quality
 - **Test Framework:** [e.g., Jest, RSpec, pytest]
