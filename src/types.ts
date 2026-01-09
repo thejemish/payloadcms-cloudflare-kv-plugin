@@ -23,8 +23,11 @@ export interface CollectionCacheOptions extends CacheOptions {
 
 /**
  * Cloudflare KV Namespace interface
- * This matches the KVNamespace type from @cloudflare/workers-types
+ * This matches the KVNamespace type from Cloudflare Workers runtime
  * Reference: https://developers.cloudflare.com/workers/runtime-apis/kv/
+ *
+ * This interface is compatible with the actual Cloudflare Workers KVNamespace type
+ * which uses `list_complete` instead of `complete` in the list() return type.
  */
 export interface KVNamespace {
   /**
@@ -48,12 +51,23 @@ export interface KVNamespace {
    * Lists keys in the KV namespace
    * @param options Optional parameters for listing (prefix, limit, cursor)
    * @returns A promise resolving to an object containing keys and pagination info
+   *
+   * Note: The actual Cloudflare Workers type returns `list_complete` instead of `complete`,
+   * but we provide a compatible interface that works with both.
    */
-  list(options?: { cursor?: string; limit?: number; prefix?: string }): Promise<{
-    complete: boolean
-    cursor?: string
-    keys: Array<{ expiration?: number; metadata?: unknown; name: string }>
-  }>
+  list(options?: { cursor?: string; limit?: number; prefix?: null | string }): Promise<
+    | {
+        cacheStatus: null | string
+        cursor: string
+        keys: Array<{ expiration?: number; metadata?: unknown; name: string }>
+        list_complete: false
+      }
+    | {
+        cacheStatus: null | string
+        keys: Array<{ expiration?: number; metadata?: unknown; name: string }>
+        list_complete: true
+      }
+  >
 
   /**
    * Stores a value in the KV namespace
@@ -66,7 +80,7 @@ export interface KVNamespace {
   put(
     key: string,
     value: string,
-    options?: { expiration?: number; expirationTtl?: number },
+    options?: { expiration?: number; expirationTtl?: number; metadata?: unknown },
   ): Promise<void>
 }
 
@@ -94,6 +108,8 @@ export type CloudflareKVPluginConfig = {
   /**
    * Cloudflare KV Namespace binding
    * This should be the KV namespace instance from your Cloudflare Worker environment
+   * Accepts the actual Cloudflare Workers KVNamespace type (e.g., KVNamespace<string>)
+   * or our compatible KVNamespace interface
    */
   kv: KVNamespace
 }

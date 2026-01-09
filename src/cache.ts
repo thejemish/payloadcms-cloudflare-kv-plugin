@@ -125,8 +125,12 @@ export async function invalidateByPattern({
     while (!complete) {
       const result = await kv.list({ cursor, limit: 1000, prefix })
       allKeys.push(...result.keys.map((k) => k.name))
-      complete = result.complete
-      cursor = result.cursor
+      complete = result.list_complete
+      if (!result.list_complete) {
+        cursor = result.cursor
+      } else {
+        cursor = undefined
+      }
     }
 
     // If pattern has wildcard, filter keys that match the full pattern
